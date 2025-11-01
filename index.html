@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاختبار التفاعلي في الكيمياء - 50 سؤالاً</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        
+        .question-container {
+            margin-bottom: 20px;
+            text-align: right;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: right;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateX(-5px);
+        }
+        
+        .option.selected {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .option-label {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+            animation: popIn 0.5s ease-out;
+        }
+        
+        .correct-feedback {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect-feedback {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .result-item {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: right;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .correct-answer {
+            background-color: #d4edda;
+            border-right: 5px solid #28a745;
+        }
+        
+        .wrong-answer {
+            background-color: #f8d7da;
+            border-right: 5px solid #dc3545;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#28a745 0% 70%, #e9ecef 70% 100%);
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .score-text {
+            background: white;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .team-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .team-title {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 28px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .team-member {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .team-member.manager {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            transform: scale(1.05);
+        }
+        
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+        
+        .team-member.manager:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .member-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .member-role {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .farewell-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .farewell-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+        
+        .farewell-message {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        
+        .teacher-name {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 15px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .chemistry-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .sound-control {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- قسم إدخال البيانات -->
+        <div id="user-info" class="section active">
+            <div class="chemistry-icon">⚗️</div>
+            <h1>الاختبار التفاعلي في الكيمياء</h1>
+            <p>اختبار شامل في مفاهيم المول، الكتلة المولية، الصيغ الكيميائية والأملاح المائية</p>
+            <input type="text" id="name" placeholder="اسمك">
+            <select id="section">
+                <option value="" disabled selected>اختر الشعبة</option>
+                <option value="1">الشعبة 1</option>
+                <option value="2">الشعبة 2</option>
+                <option value="3">الشعبة 3</option>
+                <option value="4">الشعبة 4</option>
+                <option value="5">الشعبة 5</option>
+                <option value="6">الشعبة 6</option>
+                <option value="7">الشعبة 7</option>
+            </select>
+            <div class="sound-control">
+                <input type="checkbox" id="sound-enabled" checked>
+                <label for="sound-enabled">تفعيل الأصوات</label>
+            </div>
+            <button id="start-btn">ابدأ الاختبار</button>
+        </div>
+        
+        <!-- قسم الأسئلة -->
+        <div id="quiz" class="section">
+            <h2>اختبار الكيمياء</h2>
+            <div class="timer" id="timer">الوقت: <span id="time">30:00</span></div>
+            <div class="question-container">
+                <div class="question-number" id="question-number">السؤال 1 من 50</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options" id="options-container"></div>
+            </div>
+            <div id="feedback" class="feedback"></div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <!-- قسم النتائج -->
+        <div id="results" class="section">
+            <div class="chemistry-icon">🏆</div>
+            <h1>نتيجة الاختبار</h1>
+            <h2 id="user-greeting"></h2>
+            
+            <div class="score-circle">
+                <div class="score-text" id="score-text">0%</div>
+            </div>
+            
+            <div id="score-message" style="font-size: 20px; margin: 15px 0;"></div>
+            
+            <div style="text-align: right; margin-top: 20px;">
+                <h3 class="section-title">تفاصيل النتائج</h3>
+                <div id="results-details"></div>
+            </div>
+            
+            <button id="restart-btn">إعادة الاختبار</button>
+        </div>
+    </div>
+
+    <!-- قسم فريق العمل -->
+    <div class="team-section">
+        <h2 class="team-title">فريق العمل</h2>
+        <div class="team-members">
+            <div class="team-member manager">
+                <div class="member-name">عبدالله الرشيدي</div>
+                <div class="member-role">مدير المشروع</div>
+            </div>
+            <div class="team-member">
+                <div class="member-name">قصي الزيدي</div>
+                <div class="member-role">مصمم تجربة المستخدم</div>
+            </div>
+            <div class="team-member">
+                <div class="member-name">محمد ال زريع</div>
+                <div class="member-role">مطور قاعدة البيانات</div>
+            </div>
+            <div class="team-member">
+                <div class="member-name">راكان رشيدان</div>
+                <div class="member-role">مسؤول الجودة والاختبار</div>
+            </div>
+            <div class="team-member">
+                <div class="member-name">تميم العبيري</div>
+                <div class="member-role">مطور الواجهة الأمامية</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم الوداعية -->
+    <div class="farewell-section">
+        <h2 class="farewell-title">شكراً لكم</h2>
+        <div class="farewell-message">
+            <p>نشكركم على استخدامكم منصة الاختبارات التفاعلية في الكيمياء</p>
+            <p>نتمنى لكم التوفيق والنجاح في مسيرتكم التعليمية</p>
+            <p>استمروا في التعلم والتطوير، فالعلم نور والجهل ظلام</p>
+        </div>
+        <div class="teacher-name">
+            مع تحيات الأستاذ: عبدالله حمدي
+        </div>
+    </div>
+
+    <!-- عناصر الصوت -->
+    <audio id="correct-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="incorrect-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // بيانات الأسئلة (50 سؤالاً غير متكررة)
+        const questions = [
+            {
+                question: "ما تعريف المول؟",
+                options: [
+                    "أ) كتلة المادة الموجودة في 1 لتر من الماء.",
+                    "ب) الكمية التي تساوي الكتلة الذرية للمادة معبرًا عنها بالجرامات.",
+                    "ج) وحدة قياس كمية المادة وتساوي عدد الذرات في 5 جرامات من الكربون."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما قيمة عدد أفوجادرو (تقريبًا)؟",
+                options: [
+                    "أ) 6.02 × 10²²",
+                    "ب) 6.02 × 10²³",
+                    "ج) 6.02 × 10²⁴"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "كم عدد جزيئات الماء (H₂O) في 0.5 مول منه؟",
+                options: [
+                    "أ) 3.01 × 10²³",
+                    "ب) 6.02 × 10²³",
+                    "ج) 1.204 × 10²⁴"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "إذا كان عينة تحتوي على 1.204 × 10²⁴ ذرة هيدروجين، فكم عدد مولات الهيدروجين؟",
+                options: [
+                    "أ) 1 مول",
+                    "ب) 2 مول",
+                    "ج) 0.5 مول"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من الآتي يعد مثالًا عمليًا على استخدام مبدأ المول في الحياة اليومية؟",
+                options: [
+                    "أ) عد البيض بالكرتونات (مثل دزينة).",
+                    "ب) قياس طول الطاولة بالسنتيمتر.",
+                    "ج) قياس درجة حرارة الغرفة."
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما المقصود بالكتلة المولية؟",
+                options: [
+                    "أ) كتلة مول واحد من أي مادة.",
+                    "ب) كتلة ذرة واحدة من المادة.",
+                    "ج) عدد الذرات في جرام واحد من المادة."
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما الكتلة المولية لعنصر الصوديوم (Na)؟ (الكتلة الذرية ≈ 23)",
+                options: [
+                    "أ) 11 جرام/مول",
+                    "ب) 23 جرام/مول",
+                    "ج) 46 جرام/مول"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما كتلة 2 مول من غاز الأكسجين (O₂)؟ (الكتلة الذرية O = 16)",
+                options: [
+                    "أ) 16 جرام",
+                    "ب) 32 جرام",
+                    "ج) 64 جرام"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "كم عدد المولات في 180 جرام من الجلوكوز (C₆H₁₂O₆)؟ (الكتلة المولية ≈ 180 جرام/مول)",
+                options: [
+                    "أ) 0.5 مول",
+                    "ب) 1 مول",
+                    "ج) 1.5 مول"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "إذا كانت كتلة عينة من الألومنيوم 54 جرامًا، فما عدد ذراتها؟ (Al = 27 جرام/مول)",
+                options: [
+                    "أ) 1.204 × 10²⁴",
+                    "ب) 6.02 × 10²³",
+                    "ج) 1.806 × 10²⁴"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما الكتلة المولية لمركب كلوريد الصوديوم (NaCl)؟ (Na = 23, Cl = 35.5)",
+                options: [
+                    "أ) 58.5 جرام/مول",
+                    "ب) 46 جرام/مول",
+                    "ج) 70 جرام/مول"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما الكتلة المولية لمركب حمض الكبريتيك (H₂SO₄)؟ (H=1, S=32, O=16)",
+                options: [
+                    "أ) 49 جرام/مول",
+                    "ب) 98 جرام/مول",
+                    "ج) 128 جرام/مول"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "كم عدد جزيئات ثاني أكسيد الكربون (CO₂) في 22 جرامًا منه؟ (C=12, O=16)",
+                options: [
+                    "أ) 6.02 × 10²³",
+                    "ب) 3.01 × 10²³",
+                    "ج) 1.505 × 10²³"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما كتلة جزيء واحد من الماء (H₂O) بالجرام؟ (H=1, O=16)",
+                options: [
+                    "أ) 18 جرام",
+                    "ب) 3 × 10⁻²³ جرام",
+                    "ج) 2.99 × 10⁻²³ جرام"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "إذا كانت كتلة عينة من كبريتات النحاس (CuSO₄) 80 جرامًا، فكم مولًا فيها؟ (Cu=63.5, S=32, O=16)",
+                options: [
+                    "أ) 0.5 مول",
+                    "ب) 1 مول",
+                    "ج) 1.5 مول"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما المقصود بالتركيب النسبي المئوي للمركب？",
+                options: [
+                    "أ) النسبة المئوية للكتلة التي يساهم بها كل عنصر في الكتلة المولية للمركب.",
+                    "ب) النسبة المئوية لحجم كل عنصر في المركب.",
+                    "ج) النسبة المئوية لعدد ذرات كل عنصر في المركب."
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما النسبة المئوية للهيدروجين في الماء (H₂O)？ (H=1, O=16)",
+                options: [
+                    "أ) 11.1%",
+                    "ب) 88.9%",
+                    "ج) 20%"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "في مركب الميثان (CH₄)، ما النسبة المئوية للكربون？ (C=12, H=1)",
+                options: [
+                    "أ) 25%",
+                    "ب) 50%",
+                    "ج) 75%"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "إذا كان مركب يحتوي على 40% كربون و 6.67% هيدروجين و 53.33% أكسجين، فما صيغته الأولية？ (C=12, H=1, O=16)",
+                options: [
+                    "أ) CHO",
+                    "ب) CH₂O",
+                    "ج) C₂H₄O₂"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "مركب كتلته المولية 180 جرام/مول، وصيغته الأولية CH₂O، ما صيغته الجزيئية？",
+                options: [
+                    "أ) CH₂O",
+                    "ب) C₃H₆O₃",
+                    "ج) C₆H₁₂O₆"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "ما الفرق الرئيسي بين الصيغة الأولية والجزيئية？",
+                options: [
+                    "أ) الصيغة الأولية تعطي العدد الفعلي للذرات، بينما الجزيئية تعطي أبسط نسبة.",
+                    "ب) الصيغة الجزيئية تعطي العدد الفعلي للذرات، بينما الأولية تعطي أبسط نسبة.",
+                    "ج) لا يوجد فرق بينهما."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "الصيغة الأولية لمركب ما هي CH. إذا كانت كتلته المولية 78 جرام/مول، فما صيغته الجزيئية？ (C=12, H=1)",
+                options: [
+                    "أ) CH",
+                    "ب) C₆H₆",
+                    "ج) C₃H₃"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "تحليل عينة من مركب وزنت 4.8 جرام أعطت 3.6 جرام كربون و 1.2 جرام هيدروجين. ما الصيغة الأولية لهذا المركب？",
+                options: [
+                    "أ) CH₃",
+                    "ب) CH₄",
+                    "ج) CH"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "مركب صيغته الجزيئية C₆H₁₂O₆. ما صيغته الأولية？",
+                options: [
+                    "أ) C₆H₁₂O₆",
+                    "ب) CH₂O",
+                    "ج) C₃H₆O₃"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من العوامل التالية تستخدم للربط بين الصيغة الأولية والجزيئية？",
+                options: [
+                    "أ) عدد أفوجادرو",
+                    "ب) الكتلة المولية",
+                    "ج) الوزن الجزيئي"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما المقصود بالملح المائي？",
+                options: [
+                    "أ) ملح مذاب في الماء.",
+                    "ب) ملح خالي تمامًا من جزيئات الماء.",
+                    "ج) مركب أيوني مرتبط بعدد معين من جزيئات الماء في شبيكته البلورية."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "ما الصيغة الكيميائية لكبريتات النحاس المائية (الزاج الأزرق)？",
+                options: [
+                    "أ) CuSO₄",
+                    "ب) CuSO₄ · 5H₂O",
+                    "ج) CuSO₄ · H₂O"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "عند تسخين الملح المائي، ماذا يحدث？",
+                options: [
+                    "أ) يتحول إلى ملح لا مائي ويتحرر ماء التبلور.",
+                    "ب) يتحول إلى غاز.",
+                    "ج) يتحول إلى حمض."
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "أي من الأملاح التالية يستخدم كمجفف للغازات？",
+                options: [
+                    "أ) كبريتات النحاس المائية (الزرقاء)",
+                    "ب) كلوريد الكالسيوم اللامائي",
+                    "ج) كبريتات المغنيسيوم المائية"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما اسم المركب CaSO₄ · 2H₂O？",
+                options: [
+                    "أ) الجبس",
+                    "ب) الملح الإنجليزي",
+                    "ج) الصودا الكاوية"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "عينة من كبريتات النحاس المائية كتلتها 25 جرامًا، عند تسخينها أصبحت كتلتها 16 جرامًا. ما كتلة ماء التبلور المفقود？",
+                options: [
+                    "أ) 9 جرام",
+                    "ب) 16 جرام",
+                    "ج) 41 جرام"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما استخدامات ملح كبريتات المغنيسيوم المائية (الملح الإنجليزي)？",
+                options: [
+                    "أ) في الصناعات الغذائية.",
+                    "ب) في المستحضرات الطبية والعلاجية.",
+                    "ج) كسماد زراعي."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "كيف يمكن الحصول على الملح اللامائي من الملح المائي？",
+                options: [
+                    "أ) بإذابته في الماء.",
+                    "ب) بتسخينه.",
+                    "ج) بتبريده."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما نسبة كتلة الماء في ملح كبريتات النحاس الثنائي الخماسي (CuSO₄ · 5H₂O)？ (Cu=63.5, S=32, O=16, H=1)",
+                options: [
+                    "أ) 10%",
+                    "ب) 36%",
+                    "ج) 64%"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الاسم الصحيح للملح Na₂CO₃ · 10H₂O？",
+                options: [
+                    "أ) كربونات الصوديوم المائية.",
+                    "ب) صودا الغسيل.",
+                    "ج) بيكربونات الصوديوم."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من المركبات التالية له أكبر عدد من الجزيئات عند كتلة 10 جرامات لكل منها？ (الكتل المولية: A=20, B=40, C=80 جرام/مول)",
+                options: [
+                    "أ) المركب A",
+                    "ب) المركب B",
+                    "ج) المركب C"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "إذا كانت الصيغة الأولية لمركب هي C₂H₅، وكتلته المولية 58 جرام/مول، فما صيغته الجزيئية？ (C=12, H=1)",
+                options: [
+                    "أ) C₂H₅",
+                    "ب) C₄H₁₀",
+                    "ج) C₆H₁₅"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما عدد أيونات الكلوريد (Cl⁻) في 0.25 مول من كلوريد الكالسيوم (CaCl₂)？",
+                options: [
+                    "أ) 3.01 × 10²³",
+                    "ب) 6.02 × 10²³",
+                    "ج) 1.505 × 10²³"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "ما كتلة الأكسجين في 90 جرامًا من الجلوكوز (C₆H₁₂O₆)？ (الكتلة المولية = 180 جرام/مول)",
+                options: [
+                    "أ) 48 جرام",
+                    "ب) 96 جرام",
+                    "ج) 32 جرام"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "مركب مائي شائع يستخدم في إطفاء الحرائق هو：",
+                options: [
+                    "أ) كبريتات النحاس المائية.",
+                    "ب) كبريتات المغنيسيوم المائية.",
+                    "ج) كربونات الصوديوم المائية."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "عند تحليل مركب، وجد أن النسبة المولية بين الكربون والهيدروجين والأكسجين هي 1 : 2 : 1. ما صيغته الأولية？",
+                options: [
+                    "أ) CH₂O",
+                    "ب) C₂H₄O₂",
+                    "ج) CHO₂"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "كم جرامًا من الحديد (Fe) توجد في 1 كيلوجرام من خام الهيماتيت (Fe₂O₃) النقي？ (Fe=56, O=16)",
+                options: [
+                    "أ) 560 جرام",
+                    "ب) 700 جرام",
+                    "ج) 300 جرام"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من العمليات التالية تعتبر مثالًا على تحول كيميائي مرتبط بالأملاح المائية？",
+                options: [
+                    "أ) ذوبان السكر في الماء.",
+                    "ب) تحول كبريتات النحاس الزرقاء إلى بيضاء بالحرارة.",
+                    "ج) تبخر الماء."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "إذا كان الملح المائي CoCl₂ · xH₂O يغير لونه من الوردي إلى الأزرق عند فقدان ماء التبلور، فما دلالة تغير اللون？",
+                options: [
+                    "أ) تحول إلى مركب مختلف.",
+                    "ب) تغير في الخواص الفيزيائية نتيجة فقدان جزيئات الماء.",
+                    "ج) تحول إلى حمض."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما عدد مولات ذرات الهيدروجين في 0.5 مول من غاز الميثان (CH₄)？",
+                options: [
+                    "أ) 0.5 مول",
+                    "ب) 1 مول",
+                    "ج) 2 مول"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "ما الكتلة المولية لمركب هيدروكسيد الكالسيوم Ca(OH)₂？ (Ca=40, O=16, H=1)",
+                options: [
+                    "أ) 57 جرام/مول",
+                    "ب) 74 جرام/مول",
+                    "ج) 58 جرام/مول"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما النسبة المئوية للنيتروجين في نترات الأمونيوم (NH₄NO₃)？ (N=14, H=1, O=16)",
+                options: [
+                    "أ) 17.5%",
+                    "ب) 35%",
+                    "ج) 28%"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الصيغة الكيميائية للملح المائي المعروف باسم 'الجير المطفأ'？",
+                options: [
+                    "أ) CaO",
+                    "ب) Ca(OH)₂",
+                    "ج) CaCO₃"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "إذا كانت كتلة الملح اللامائي 10 جرام وكتلة ماء التبلور 5 جرام، فما نسبة ماء التبلور في الملح المائي？",
+                options: [
+                    "أ) 33.3%",
+                    "ب) 50%",
+                    "ج) 66.7%"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "أي من العبارات التالية صحيحة فيما يخص الصيغة الأولية？",
+                options: [
+                    "أ) يمكن أن تكون نفس الصيغة الجزيئية.",
+                    "ب) تعطي دائمًا التركيب الفعلي للجزيء.",
+                    "ج) لا يمكن حسابها من البيانات التجريبية."
+                ],
+                correctAnswer: 0
+            }
+        ];
+
+        // العناصر الرئيسية
+        const userInfoSection = document.getElementById('user-info');
+        const quizSection = document.getElementById('quiz');
+        const resultsSection = document.getElementById('results');
+        const startBtn = document.getElementById('start-btn');
+        const nameInput = document.getElementById('name');
+        const sectionSelect = document.getElementById('section');
+        const soundEnabled = document.getElementById('sound-enabled');
+        const questionNumber = document.getElementById('question-number');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedback = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress');
+        const userGreeting = document.getElementById('user-greeting');
+        const scoreText = document.getElementById('score-text');
+        const scoreMessage = document.getElementById('score-message');
+        const resultsDetails = document.getElementById('results-details');
+        const restartBtn = document.getElementById('restart-btn');
+        const correctSound = document.getElementById('correct-sound');
+        const incorrectSound = document.getElementById('incorrect-sound');
+        const timerElement = document.getElementById('time');
+
+        // متغيرات التتبع
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let userName = "";
+        let userSection = "";
+        let timer;
+        let timeLeft = 30 * 60; // 30 دقيقة بالثواني
+
+        // تهيئة التطبيق
+        startBtn.addEventListener('click', startQuiz);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        function startQuiz() {
+            userName = nameInput.value.trim();
+            userSection = sectionSelect.value;
+            
+            if (!userName || !userSection) {
+                alert("يرجى إدخال الاسم واختيار الشعبة!");
+                return;
+            }
+            
+            userInfoSection.classList.remove('active');
+            quizSection.classList.add('active');
+            
+            // بدء المؤقت
+            startTimer();
+            
+            loadQuestion();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showResults();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionNumber.textContent = `السؤال ${currentQuestionIndex + 1} من ${questions.length}`;
+            questionText.textContent = currentQuestion.question;
+            
+            // تحديث شريط التقدم
+            const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            
+            // مسح الخيارات السابقة
+            optionsContainer.innerHTML = '';
+            
+            // إضافة الخيارات الجديدة
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                
+                const optionLabel = document.createElement('div');
+                optionLabel.classList.add('option-label');
+                optionLabel.textContent = option.charAt(0); // أ، ب، ج
+                
+                const optionText = document.createElement('span');
+                optionText.textContent = option;
+                
+                optionElement.appendChild(optionText);
+                optionElement.appendChild(optionLabel);
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // إخفاء التغذية الراجعة
+            feedback.style.display = 'none';
+        }
+
+        function selectOption(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            // إزالة التحديد من جميع الخيارات
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // تحديد الخيار المختار
+            options[selectedIndex].classList.add('selected');
+            
+            // حفظ إجابة المستخدم
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            
+            // التحقق من الإجابة
+            const isCorrect = selectedIndex === currentQuestion.correctAnswer;
+            
+            // تشغيل الصوت المناسب
+            if (soundEnabled.checked) {
+                if (isCorrect) {
+                    correctSound.currentTime = 0;
+                    correctSound.play();
+                } else {
+                    incorrectSound.currentTime = 0;
+                    incorrectSound.play();
+                }
+            }
+            
+            // عرض التغذية الراجعة
+            if (isCorrect) {
+                feedback.textContent = "مبروك! الإجابة صحيحة ✓ يمكنك التقدم";
+                feedback.className = "feedback correct-feedback";
+            } else {
+                feedback.textContent = "حاول مجدداً ✗";
+                feedback.className = "feedback incorrect-feedback";
+            }
+            
+            feedback.style.display = 'block';
+            
+            // إبراز الإجابة الصحيحة في حالة الخطأ
+            if (!isCorrect) {
+                options[currentQuestion.correctAnswer].classList.add('correct');
+            }
+            
+            // الانتقال التلقائي للسؤال التالي بعد تأخير
+            setTimeout(() => {
+                nextQuestion();
+            }, isCorrect ? 1500 : 3000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                clearInterval(timer);
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizSection.classList.remove('active');
+            resultsSection.classList.add('active');
+            
+            // حساب النتيجة
+            let correctCount = 0;
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    correctCount++;
+                }
+            });
+            
+            const scorePercentage = (correctCount / questions.length) * 100;
+            
+            // عرض التحيّة والنتيجة
+            userGreeting.textContent = `أهلاً ${userName} - الشعبة ${userSection}`;
+            scoreText.textContent = `${scorePercentage.toFixed(0)}%`;
+            
+            // تحديث دائرة النتيجة
+            const scoreCircle = document.querySelector('.score-circle');
+            scoreCircle.style.background = `conic-gradient(#28a745 0% ${scorePercentage}%, #e9ecef ${scorePercentage}% 100%)`;
+            
+            // رسالة تقييم النتيجة
+            if (scorePercentage >= 90) {
+                scoreMessage.textContent = "نتيجة ممتازة! أنت متمكن من مفاهيم الكيمياء بشكل رائع.";
+                scoreMessage.style.color = "#28a745";
+            } else if (scorePercentage >= 70) {
+                scoreMessage.textContent = "نتيجة جيدة! لديك فهم جيد لمفاهيم الكيمياء.";
+                scoreMessage.style.color = "#17a2b8";
+            } else if (scorePercentage >= 50) {
+                scoreMessage.textContent = "نتيجة مقبولة! تحتاج إلى مراجعة بعض المفاهيم.";
+                scoreMessage.style.color = "#ffc107";
+            } else {
+                scoreMessage.textContent = "يحتاج تحسين! ننصحك بمراجعة مفاهيم الكيمياء الأساسية.";
+                scoreMessage.style.color = "#dc3545";
+            }
+            
+            // عرض تفاصيل النتائج
+            resultsDetails.innerHTML = '';
+            questions.forEach((question, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                
+                const isCorrect = userAnswers[index] === question.correctAnswer;
+                const userAnswerIndex = userAnswers[index];
+                
+                if (isCorrect) {
+                    resultItem.classList.add('correct-answer');
+                    resultItem.innerHTML = `
+                        <strong>س ${index + 1}:</strong> ${question.question}<br>
+                        <span>إجابتك: ${question.options[userAnswerIndex]} ✓</span>
+                    `;
+                } else {
+                    resultItem.classList.add('wrong-answer');
+                    resultItem.innerHTML = `
+                        <strong>س ${index + 1}:</strong> ${question.question}<br>
+                        <span>إجابتك: ${userAnswerIndex !== undefined ? question.options[userAnswerIndex] : "لم تجب"} ✗</span><br>
+                        <span>الإجابة الصحيحة: ${question.options[question.correctAnswer]}</span>
+                    `;
+                }
+                
+                resultsDetails.appendChild(resultItem);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            timeLeft = 30 * 60;
+            
+            resultsSection.classList.remove('active');
+            userInfoSection.classList.add('active');
+            
+            // إعادة تعيين الحقول
+            nameInput.value = '';
+            sectionSelect.value = '';
+        }
+    </script>
+</body>
+</html>
